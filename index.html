@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>万場町商店街 デジタルスタンプラリー</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F7F2E7;
+    --paper-deep:#EFE7D6;
+    --ink:#26344A;
+    --indigo:#2B4570;
+    --indigo-deep:#17273F;
+    --beni:#BD4A34;
+    --beni-deep:#9A3A28;
+    --moss:#6E8B58;
+    --gold:#C9A24B;
+    --stone:#9C9587;
+    --stone-line:#D8CFBC;
+    --white:#FFFDF8;
+    --shadow: 0 6px 16px rgba(38,52,74,.12);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 15% 8%, rgba(255,255,255,.5), transparent 40%),
+      var(--paper);
+    color:var(--ink);
+    font-family:"Zen Kaku Gothic New", sans-serif;
+    min-height:100vh;
+    overflow-x:hidden;
+  }
+  .app{max-width:480px; margin:0 auto; min-height:100vh; position:relative; padding-bottom:90px;}
+
+  /* ---------- Header ---------- */
+  header.top{
+    padding:22px 20px 16px;
+    position:relative;
+  }
+  .eyebrow{
+    font-size:11px; letter-spacing:.22em; color:var(--indigo);
+    font-weight:700; margin:0 0 4px;
+  }
+  h1.title{
+    font-family:"Shippori Mincho", serif;
+    font-size:26px; line-height:1.4; margin:0;
+    color:var(--indigo-deep);
+    font-weight:700;
+  }
+  h1.title small{display:block; font-size:13px; font-family:"Zen Kaku Gothic New",sans-serif; font-weight:500; color:var(--stone); margin-top:4px;}
+
+  /* progress */
+  .progress-row{
+    display:flex; align-items:center; gap:12px; padding:0 20px 6px;
+  }
+  .progress-track{
+    flex:1; height:8px; border-radius:5px; background:var(--stone-line); overflow:hidden;
+  }
+  .progress-fill{
+    height:100%; background:linear-gradient(90deg, var(--beni), var(--gold));
+    width:0%; transition:width .5s ease;
+  }
+  .progress-num{font-size:13px; font-weight:700; color:var(--indigo-deep); white-space:nowrap;}
+
+  /* today course banner */
+  .course-banner{
+    margin:14px 20px 0; padding:12px 14px; border-radius:14px;
+    background:var(--indigo); color:var(--paper);
+    display:flex; gap:10px; align-items:flex-start;
+    box-shadow:var(--shadow);
+  }
+  .course-banner .stamp-mark{
+    font-family:"Shippori Mincho",serif; font-weight:700; font-size:13px;
+    background:var(--beni); color:#fff; border-radius:999px; padding:3px 10px;
+    flex-shrink:0; margin-top:2px;
+  }
+  .course-banner p{margin:0; font-size:12.5px; line-height:1.6;}
+  .course-banner b{font-size:13.5px;}
+
+  /* ---------- Map ---------- */
+  .map-wrap{padding:20px 14px 6px;}
+  .rail-row{
+    position:relative;
+    border-top:3px solid var(--indigo-deep);
+    border-bottom:3px solid var(--indigo-deep);
+    padding:22px 4px 26px;
+    margin-bottom:26px;
+  }
+  .rail-row .row-label{
+    position:absolute; top:-13px; left:14px; background:var(--paper);
+    padding:0 8px; font-size:11px; letter-spacing:.15em; color:var(--stone); font-weight:700;
+  }
+  .houses{display:flex; justify-content:space-around; gap:6px; flex-wrap:wrap;}
+
+  .house-btn{
+    background:none; border:none; padding:0; cursor:pointer;
+    display:flex; flex-direction:column; align-items:center; gap:6px;
+    width:19%; min-width:58px;
+    font-family:inherit;
+  }
+  .house-btn:focus-visible{ outline:3px solid var(--beni); outline-offset:4px; border-radius:8px;}
+  .house-icon{
+    width:100%; aspect-ratio:1/1; position:relative;
+    filter: grayscale(1) opacity(.55);
+    transition: filter .4s ease, transform .2s ease;
+  }
+  .house-btn:active .house-icon{transform:scale(.93);}
+  .house-btn.stamped .house-icon{filter:none;}
+  .roof{
+    position:absolute; top:0; left:8%; width:84%; height:52%;
+    background:var(--accent, var(--stone));
+    clip-path:polygon(50% 0, 100% 100%, 0 100%);
+  }
+  .body-part{
+    position:absolute; bottom:0; left:16%; width:68%; height:52%;
+    background:var(--accent-body, var(--stone));
+    border-radius:2px;
+  }
+  .badge-check{
+    position:absolute; top:-6px; right:-2px; width:20px; height:20px; border-radius:50%;
+    background:var(--beni); color:#fff; font-size:12px; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 2px 4px rgba(0,0,0,.25); opacity:0; transform:scale(.4);
+    transition:opacity .3s ease, transform .3s ease;
+  }
+  .house-btn.stamped .badge-check{opacity:1; transform:scale(1);}
+  .house-name{font-size:11.5px; font-weight:700; text-align:center; line-height:1.3; color:var(--ink);}
+  .house-btn.dim .house-name{color:var(--stone);}
+  .off-course-tag{font-size:9px; color:var(--stone); font-weight:500;}
+
+  .landmark{
+    display:flex; flex-direction:column; align-items:center; gap:4px; width:19%; min-width:58px;
+    opacity:.75; font-size:10.5px; text-align:center; color:var(--stone);
+  }
+  .landmark .lm-icon{font-size:22px;}
+
+  .caption-note{
+    text-align:center; font-size:11px; color:var(--stone); margin:-14px 0 20px;
+  }
+
+  /* bottom bar */
+  .bottom-bar{
+    position:fixed; bottom:0; left:0; right:0;
+    max-width:480px; margin:0 auto;
+    background:var(--white); border-top:1px solid var(--stone-line);
+    padding:10px 16px calc(10px + env(safe-area-inset-bottom));
+    display:flex; gap:10px;
+  }
+  .btn{
+    flex:1; border:none; border-radius:12px; padding:13px 10px; font-weight:700;
+    font-size:14px; font-family:inherit; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;
+  }
+  .btn-primary{background:var(--indigo-deep); color:#fff;}
+  .btn-ghost{background:var(--paper-deep); color:var(--indigo-deep);}
+
+  /* ---------- Shop detail view ---------- */
+  .view{
+    position:fixed; inset:0; background:var(--paper); max-width:480px; margin:0 auto;
+    transform:translateX(100%); transition:transform .35s cubic-bezier(.4,0,.2,1);
+    overflow-y:auto; z-index:40;
+  }
+  .view.active{transform:translateX(0);}
+  .view-header{
+    display:flex; align-items:center; gap:10px; padding:16px 16px 8px;
+    position:sticky; top:0; background:var(--paper); z-index:2;
+  }
+  .back-btn{
+    width:38px; height:38px; border-radius:50%; border:none; background:var(--white);
+    box-shadow:var(--shadow); font-size:18px; cursor:pointer; color:var(--indigo-deep);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .shop-heading{font-family:"Shippori Mincho",serif; font-size:19px; font-weight:700; color:var(--indigo-deep);}
+  .shop-heading small{display:block; font-size:11px; font-weight:500; color:var(--stone); font-family:"Zen Kaku Gothic New",sans-serif;}
+
+  .shop-photo{
+    margin:6px 16px 0; height:170px; border-radius:16px; overflow:hidden;
+    background:linear-gradient(135deg, var(--accent-a, var(--indigo)), var(--accent-b,var(--gold)));
+    display:flex; align-items:center; justify-content:center; box-shadow:var(--shadow); position:relative;
+  }
+  .shop-photo .avatar-mark{font-size:52px;}
+  .shop-photo .photo-label{position:absolute; bottom:8px; left:10px; font-size:10px; color:#fff; background:rgba(0,0,0,.28); padding:3px 8px; border-radius:999px;}
+
+  .card{
+    margin:14px 16px 0; background:var(--white); border-radius:16px; padding:16px;
+    box-shadow:var(--shadow);
+  }
+  .card h3{margin:0 0 8px; font-size:13px; letter-spacing:.05em; color:var(--indigo); font-weight:700;}
+  .qa-line{display:flex; gap:8px; font-size:13.5px; margin-bottom:8px; line-height:1.6;}
+  .qa-line:last-child{margin-bottom:0;}
+  .qa-line .q{color:var(--beni); font-weight:700; flex-shrink:0;}
+  .hours-row{display:flex; align-items:center; gap:8px; font-size:14px; font-weight:700; color:var(--indigo-deep);}
+
+  .off-course-notice{
+    margin:14px 16px 0; background:#F1E9D8; border:1px dashed var(--gold);
+    border-radius:14px; padding:14px; font-size:12.5px; color:var(--ink); line-height:1.7;
+  }
+
+  .stamp-zone{
+    margin:18px 16px 6px; display:flex; flex-direction:column; align-items:center; gap:16px;
+  }
+  .stamp-frame{
+    width:150px; height:150px; border-radius:50%;
+    border:3px dashed var(--stone-line);
+    background:var(--white);
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+  .stamp-frame .placeholder-text{font-size:11px; color:var(--stone); text-align:center; padding:0 20px;}
+  .hanko{
+    width:130px; height:130px; border-radius:50%;
+    border:5px solid var(--beni); color:var(--beni);
+    display:flex; align-items:center; justify-content:center; flex-direction:column;
+    font-family:"Shippori Mincho",serif; font-weight:700;
+    opacity:0; transform:scale(2.4) rotate(-18deg);
+    position:absolute;
+  }
+  .hanko.show{animation: stampDown .55s cubic-bezier(.2,.9,.3,1) forwards;}
+  @keyframes stampDown{
+    0%{opacity:0; transform:scale(2.6) rotate(-18deg);}
+    55%{opacity:1; transform:scale(.92) rotate(-6deg);}
+    75%{transform:scale(1.06) rotate(-6deg);}
+    100%{opacity:1; transform:scale(1) rotate(-6deg);}
+  }
+  .hanko .h-date{font-size:10px; margin-top:2px; letter-spacing:.05em;}
+  .hanko .h-name{font-size:15px;}
+
+  .scan-btn{
+    width:100%; border:none; border-radius:14px; padding:16px; font-size:15px; font-weight:700;
+    background:var(--beni); color:#fff; display:flex; align-items:center; justify-content:center; gap:8px;
+    box-shadow:0 6px 14px rgba(189,74,52,.3); cursor:pointer;
+  }
+  .scan-btn:disabled{background:var(--stone); box-shadow:none; cursor:default;}
+  .scan-hint{font-size:11px; color:var(--stone); text-align:center; margin:0 16px;}
+
+  /* camera overlay */
+  .cam-overlay{
+    position:fixed; inset:0; background:#000; z-index:80; display:none;
+    flex-direction:column; max-width:480px; margin:0 auto;
+  }
+  .cam-overlay.active{display:flex;}
+  .cam-overlay video{flex:1; object-fit:cover; width:100%;}
+  .cam-frame-guide{
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:62%; aspect-ratio:1/1; border:3px solid var(--gold); border-radius:16px;
+    box-shadow:0 0 0 999px rgba(0,0,0,.45);
+  }
+  .cam-top{
+    position:absolute; top:0; left:0; right:0; padding:16px; display:flex; justify-content:space-between; align-items:center; z-index:2;
+  }
+  .cam-close{width:38px;height:38px;border-radius:50%; background:rgba(255,255,255,.15); border:none; color:#fff; font-size:18px;}
+  .cam-status{
+    position:absolute; bottom:26px; left:0; right:0; text-align:center; color:#fff; font-size:13px;
+    padding:0 30px;
+  }
+
+  /* modal (card / etiquette) */
+  .modal-bg{
+    position:fixed; inset:0; background:rgba(23,39,63,.55); z-index:60; display:none;
+    align-items:flex-end; max-width:480px; margin:0 auto;
+  }
+  .modal-bg.active{display:flex;}
+  .modal-sheet{
+    background:var(--paper); width:100%; border-radius:22px 22px 0 0; padding:22px 20px calc(22px + env(safe-area-inset-bottom));
+    max-height:82vh; overflow-y:auto;
+  }
+  .modal-sheet h2{font-family:"Shippori Mincho",serif; font-size:19px; color:var(--indigo-deep); margin:0 0 12px;}
+  .modal-sheet .rule{display:flex; gap:10px; font-size:13px; line-height:1.75; margin-bottom:12px;}
+  .modal-sheet .rule .n{
+    flex-shrink:0; width:22px;height:22px;border-radius:50%;background:var(--indigo); color:#fff;
+    font-size:11px; font-weight:700; display:flex;align-items:center;justify-content:center; margin-top:2px;
+  }
+  .modal-close{
+    margin-top:6px; width:100%; border:none; border-radius:12px; padding:13px; background:var(--indigo-deep);
+    color:#fff; font-weight:700; font-size:14px;
+  }
+
+  .toast{
+    position:fixed; bottom:100px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--indigo-deep); color:#fff; padding:11px 20px; border-radius:999px; font-size:13px;
+    opacity:0; transition:opacity .3s ease, transform .3s ease; z-index:90; white-space:nowrap;
+  }
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <header class="top">
+    <p class="eyebrow">SHINJO・MANBACHO</p>
+    <h1 class="title">万場町商店街<br>デジタルスタンプラリー<small>雪国のくらしを、歩いてめぐる。</small></h1>
+  </header>
+
+  <div class="progress-row">
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-num" id="progressNum">0 / 0</div>
+  </div>
+
+  <div class="course-banner">
+    <span class="stamp-mark" id="dayKanji">火</span>
+    <p><b id="courseTitle">本日のおすすめコース</b><br><span id="courseShops">読み込み中…</span></p>
+  </div>
+
+  <div class="map-wrap">
+
+    <div class="rail-row">
+      <span class="row-label">上通り</span>
+      <div class="houses" id="rowA"></div>
+    </div>
+
+    <div class="rail-row">
+      <span class="row-label">下通り</span>
+      <div class="houses" id="rowB"></div>
+    </div>
+
+    <p class="caption-note">建物をタップすると、お店の紹介とスタンプ画面に移動します</p>
+  </div>
+
+  <div class="bottom-bar">
+    <button class="btn btn-ghost" id="openCardBtn">📜 台紙のルール</button>
+    <button class="btn btn-primary" id="resetBtn">🔄 テスト用リセット</button>
+  </div>
+
+  <!-- ============ Shop detail view ============ -->
+  <div class="view" id="shopView">
+    <div class="view-header">
+      <button class="back-btn" id="backBtn">←</button>
+      <div class="shop-heading"><span id="shopName">-</span><small id="shopCategory"></small></div>
+    </div>
+
+    <div class="shop-photo" id="shopPhoto"><div class="avatar-mark" id="shopAvatar">🏠</div><span class="photo-label">店主のご紹介</span></div>
+
+    <div class="card">
+      <h3>ひとことインタビュー</h3>
+      <div id="qaList"></div>
+    </div>
+
+    <div class="card">
+      <h3>営業時間</h3>
+      <div class="hours-row">🕒 <span id="shopHours">-</span></div>
+    </div>
+
+    <div id="offCourseNotice" class="off-course-notice" style="display:none;">
+      本日は <b id="offCourseDay">-</b> のコース対象店舗ではありません。お店の紹介はご覧いただけますが、スタンプの取得は対象日にお越しください。曜日ごとのコースは商店街入口の案内でもご確認いただけます。
+    </div>
+
+    <div class="stamp-zone" id="stampZone">
+      <div class="stamp-frame" id="stampFrame">
+        <span class="placeholder-text" id="stampPlaceholder">ここにスタンプが<br>押されます</span>
+        <div class="hanko" id="hanko"><span class="h-name" id="hankoName">済</span><span class="h-date" id="hankoDate"></span></div>
+      </div>
+      <button class="scan-btn" id="scanBtn">📷 カメラを起動してQRを読み取る</button>
+      <p class="scan-hint">お店に設置されたQRコードを枠内に写してください</p>
+    </div>
+  </div>
+
+  <!-- ============ Camera overlay ============ -->
+  <div class="cam-overlay" id="camOverlay">
+    <div class="cam-top">
+      <span style="color:#fff; font-size:13px; font-weight:700;" id="camShopLabel">QRコードを読み取り中</span>
+      <button class="cam-close" id="camClose">✕</button>
+    </div>
+    <video id="camVideo" playsinline autoplay muted></video>
+    <div class="cam-frame-guide"></div>
+    <div class="cam-status" id="camStatus">QRコードを枠内に合わせてください</div>
+    <canvas id="camCanvas" style="display:none;"></canvas>
+  </div>
+
+  <!-- ============ Etiquette modal ============ -->
+  <div class="modal-bg" id="cardModal">
+    <div class="modal-sheet">
+      <h2>スタンプ台紙のご案内</h2>
+      <div class="rule"><span class="n">1</span>お店は地域の皆さんが日々くらす、生きた商店街です。営業中のお邪魔にならないよう、静かにご見学ください。</div>
+      <div class="rule"><span class="n">2</span>QRコードの読み取り以外の目的で、店内での撮影や店主への長時間の質問はご遠慮ください。</div>
+      <div class="rule"><span class="n">3</span>スタンプがもらえるのは、その曜日のコースに含まれるお店のみです。他の日にまた訪れる楽しみとしてください。</div>
+      <div class="rule"><span class="n">4</span>営業時間外はスタンプを取得できません。無理な入店や呼び出しはお控えください。</div>
+      <div class="rule"><span class="n">5</span>お店の方への迷惑行為があった場合、新庄市観光担当までご連絡ください。状況を確認し、必要な対応を行います。</div>
+      <button class="modal-close" id="closeCardBtn">閉じる</button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.js"></script>
+<script>
+/* =========================================================
+   万場町商店街 デジタルスタンプラリー
+   実証実験用サンプルコード
+   ---------------------------------------------------------
+   店舗データはこの SHOPS 配列を書き換えるだけで更新できます。
+   qr の値は、各店舗に実際に掲示する QR コードの文字列と
+   完全に一致させてください（例: 印刷したQRの中身が
+   "MANBA-HANAYA" ならここも同じ文字列にします）。
+   ========================================================= */
+
+const SHOPS = [
+  // ---- 上通り ----
+  { id:"hanaya",   row:"A", name:"花屋",       category:"生花店",
+    accentA:"#D98CB3", accentB:"#F3C6DC", qr:"MANBA-HANAYA",
+    avatar:"💐", hours:"9:00〜18:00（水曜定休）",
+    qa:[["好きな花は？","季節ごとに変わりますが、今は雪割草です"],["おすすめの一言","店先の花は毎朝仕入れたてです"]] },
+
+  { id:"sakanaya", row:"A", name:"魚屋",       category:"鮮魚店",
+    accentA:"#6E9B5B", accentB:"#B7D69B", qr:"MANBA-SAKANAYA",
+    avatar:"🐟", hours:"8:00〜17:00（日曜定休）",
+    qa:[["今日のおすすめは？","日替わりです。店先の黒板をご覧ください"],["一番好きな料理は？","塩焼きが一番好きです"]] },
+
+  { id:"shoten",   row:"A", name:"商店",       category:"よろず商店",
+    accentA:"#E6A15E", accentB:"#F4CFA0", qr:"MANBA-SHOTEN",
+    avatar:"🏪", hours:"9:00〜19:00（無休）",
+    qa:[["人気の商品は？","地元のお菓子が人気です"],["店の自慢は？","何でも揃うところです"]] },
+
+  { id:"sakaya",   row:"A", name:"酒屋",       category:"酒販店",
+    accentA:"#4E6E63", accentB:"#8FB0A3", qr:"MANBA-SAKAYA",
+    avatar:"🍶", hours:"10:00〜20:00（火曜定休）",
+    qa:[["おすすめのお酒は？","地元の純米酒です"],["好きな肴は？","塩辛が好きです"]] },
+
+  { id:"sobaya",   row:"A", name:"蕎麦屋",     category:"茶そば",
+    accentA:"#8A7A6B", accentB:"#C6B9A9", qr:"MANBA-SOBAYA",
+    avatar:"🍵", hours:"11:00〜15:00（月曜定休）",
+    qa:[["名物は？","地元名物の茶そばです"],["こだわりは？","毎朝打つ生麺です"]] },
+
+  // ---- 下通り ----
+  { id:"kamiya",   row:"B", name:"紙屋",       category:"文具・漫画",
+    accentA:"#2F3F63", accentB:"#7C8FB8", qr:"MANBA-KAMIYA",
+    avatar:"📚", hours:"10:00〜18:00（水曜定休）",
+    qa:[["一番人気は？","HUNTER×HUNTERの単行本です"],["店主から一言","ゆっくり見ていってください"]] },
+
+  { id:"teppoya",  row:"B", name:"鉄砲屋",     category:"狩猟体験（要予約）",
+    accentA:"#5D7A8C", accentB:"#A2C0CE", qr:"MANBA-TEPPOYA",
+    avatar:"🎯", hours:"10:00〜17:00（要予約・不定休）",
+    qa:[["体験の内容は？","狩猟の基礎を学べます"],["対象年齢は？","中学生以上です"]] },
+
+  { id:"biyoshitsu", row:"B", name:"美容室",   category:"美容室",
+    accentA:"#B94F63", accentB:"#E2A0AC", qr:"MANBA-BIYOSHITSU",
+    avatar:"💇", hours:"9:30〜18:30（月曜定休）",
+    qa:[["店主の趣味は？","コーヒーです"],["おすすめは？","一杯淹れたてのコーヒーもどうぞ"]] },
+
+  { id:"kissa",    row:"B", name:"喫茶のくらし", category:"本プログラム拠点",
+    accentA:"#2B4570", accentB:"#7FA0C9", qr:"MANBA-KISSA",
+    avatar:"☕", hours:"10:00〜17:00（火曜定休）",
+    qa:[["ここは？","本プログラムの受付拠点です"],["ご飯プレートは？","お惣菜を乗せてお楽しみください"]] },
+
+  { id:"kobo",     row:"B", name:"工房のくらし", category:"本プログラム拠点",
+    accentA:"#4F8A6B", accentB:"#9CC8AC", qr:"MANBA-KOBO",
+    avatar:"🎨", hours:"10:00〜17:00（火曜定休）",
+    qa:[["工房では？","地元の手仕事を体験できます"],["一言","気軽に覗いてみてください"]] },
+
+  { id:"sanshi",   row:"B", name:"蚕糸試験場", category:"月1回マルシェ開催",
+    accentA:"#7A8450", accentB:"#B7C08D", qr:"MANBA-SANSHI",
+    avatar:"🏭", hours:"マルシェ開催日のみ（月1回）",
+    qa:[["マルシェの内容は？","地元農産物や手作り品の販売です"],["開催日は？","毎月第2日曜日です"]] },
+];
+
+/* 曜日ごとのおすすめコース（0=日 … 6=土）
+   店舗側の負担を分散しつつ、来訪日の傾向を把握するための仕組み。
+   土日は全店舗を対象にしています。 */
+const COURSE_SCHEDULE = {
+  0: {label:"日", title:"週末フリーコース", shops:"all"},
+  1: {label:"月", title:"はじまりコース",   shops:["hanaya","kamiya","sanshi"]},
+  2: {label:"火", title:"あじわいコース",   shops:["sakanaya","teppoya","kissa"]},
+  3: {label:"水", title:"くらしコース",     shops:["shoten","biyoshitsu","kobo"]},
+  4: {label:"木", title:"つながりコース",   shops:["sakaya","hanaya","kamiya"]},
+  5: {label:"金", title:"あきないコース",   shops:["sobaya","sakanaya","teppoya"]},
+  6: {label:"土", title:"週末フリーコース", shops:"all"},
+};
+
+const STORAGE_KEY = "manbacho_stamps_v1";
+
+function getStamps(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  }catch(e){ return []; }
+}
+function saveStamp(id){
+  const s = getStamps();
+  if(!s.includes(id)){ s.push(id); localStorage.setItem(STORAGE_KEY, JSON.stringify(s)); }
+}
+function resetStamps(){ localStorage.removeItem(STORAGE_KEY); }
+
+function todayCourse(){
+  const day = new Date().getDay();
+  return { day, ...COURSE_SCHEDULE[day] };
+}
+function isShopInTodayCourse(shopId){
+  const c = todayCourse();
+  return c.shops === "all" || c.shops.includes(shopId);
+}
+
+/* ---------- render map ---------- */
+function houseNode(shop){
+  const stamps = getStamps();
+  const stamped = stamps.includes(shop.id);
+  const inCourse = isShopInTodayCourse(shop.id);
+  const btn = document.createElement("button");
+  btn.className = "house-btn" + (stamped ? " stamped":"") + (!inCourse && !stamped ? " dim":"");
+  btn.innerHTML = `
+    <div class="house-icon" style="--accent:${shop.accentA}; --accent-body:${shop.accentB};">
+      <div class="roof"></div>
+      <div class="body-part"></div>
+      <div class="badge-check">✓</div>
+    </div>
+    <div class="house-name">${shop.name}</div>
+    ${(!inCourse) ? `<div class="off-course-tag">本日対象外</div>` : ``}
+  `;
+  btn.addEventListener("click", ()=> openShop(shop.id));
+  return btn;
+}
+
+function renderMap(){
+  const rowA = document.getElementById("rowA");
+  const rowB = document.getElementById("rowB");
+  rowA.innerHTML = ""; rowB.innerHTML = "";
+  SHOPS.filter(s=>s.row==="A").forEach(s=> rowA.appendChild(houseNode(s)));
+  SHOPS.filter(s=>s.row==="B").forEach(s=> rowB.appendChild(houseNode(s)));
+
+  const stamps = getStamps();
+  document.getElementById("progressNum").textContent = `${stamps.length} / ${SHOPS.length}`;
+  document.getElementById("progressFill").style.width = `${(stamps.length/SHOPS.length)*100}%`;
+
+  const c = todayCourse();
+  document.getElementById("dayKanji").textContent = c.label;
+  document.getElementById("courseTitle").textContent = `本日（${c.label}曜日）のコース：${c.title}`;
+  document.getElementById("courseShops").textContent =
+    c.shops === "all" ? "すべてのお店でスタンプを集められます"
+    : c.shops.map(id => SHOPS.find(s=>s.id===id).name).join(" → ");
+}
+
+/* ---------- shop detail view ---------- */
+let currentShopId = null;
+
+function openShop(id){
+  currentShopId = id;
+  const shop = SHOPS.find(s=>s.id===id);
+  const stamped = getStamps().includes(id);
+  const inCourse = isShopInTodayCourse(id);
+
+  document.getElementById("shopName").textContent = shop.name;
+  document.getElementById("shopCategory").textContent = shop.category;
+  document.getElementById("shopAvatar").textContent = shop.avatar;
+  document.getElementById("shopPhoto").style.setProperty("--accent-a", shop.accentA);
+  document.getElementById("shopPhoto").style.setProperty("--accent-b", shop.accentB);
+  document.getElementById("shopHours").textContent = shop.hours;
+
+  const qaList = document.getElementById("qaList");
+  qaList.innerHTML = shop.qa.map(([q,a])=>`<div class="qa-line"><span class="q">Q.</span><span>${q}<br><span style="color:var(--stone)">${a}</span></span></div>`).join("");
+
+  const offNotice = document.getElementById("offCourseNotice");
+  const stampZone = document.getElementById("stampZone");
+  const scanBtn = document.getElementById("scanBtn");
+
+  if(stamped){
+    offNotice.style.display = "none";
+    stampZone.style.display = "flex";
+    scanBtn.style.display = "none";
+    document.getElementById("stampPlaceholder").style.display = "none";
+    document.getElementById("hanko").classList.add("show");
+  } else if(!inCourse){
+    offNotice.style.display = "block";
+    document.getElementById("offCourseDay").textContent = todayCourse().label + "曜日";
+    stampZone.style.display = "none";
+  } else {
+    offNotice.style.display = "none";
+    stampZone.style.display = "flex";
+    scanBtn.style.display = "flex";
+    scanBtn.disabled = false;
+    document.getElementById("stampPlaceholder").style.display = "block";
+    document.getElementById("hanko").classList.remove("show");
+  }
+
+  document.getElementById("shopView").classList.add("active");
+}
+
+function closeShop(){
+  document.getElementById("shopView").classList.remove("active");
+  renderMap();
+}
+
+/* ---------- camera / QR ---------- */
+let stream = null;
+let scanning = false;
+
+async function startCamera(){
+  const shop = SHOPS.find(s=>s.id===currentShopId);
+  document.getElementById("camShopLabel").textContent = shop.name + " のQRを読み取り中";
+  document.getElementById("camStatus").textContent = "QRコードを枠内に合わせてください";
+  document.getElementById("camOverlay").classList.add("active");
+
+  try{
+    stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:"environment" } });
+    const video = document.getElementById("camVideo");
+    video.srcObject = stream;
+    await video.play();
+    scanning = true;
+    requestAnimationFrame(scanLoop);
+  }catch(err){
+    document.getElementById("camStatus").textContent = "カメラを起動できませんでした。ブラウザの権限設定をご確認ください。";
+  }
+}
+
+function stopCamera(){
+  scanning = false;
+  if(stream){ stream.getTracks().forEach(t=>t.stop()); stream = null; }
+  document.getElementById("camOverlay").classList.remove("active");
+}
+
+function scanLoop(){
+  if(!scanning) return;
+  const video = document.getElementById("camVideo");
+  const canvas = document.getElementById("camCanvas");
+  if(video.readyState === video.HAVE_ENOUGH_DATA){
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const imageData = ctx.getImageData(0,0,canvas.width, canvas.height);
+    const code = jsQR(imageData.data, imageData.width, imageData.height);
+    if(code && code.data){
+      handleScanResult(code.data);
+      return;
+    }
+  }
+  requestAnimationFrame(scanLoop);
+}
+
+function handleScanResult(data){
+  const shop = SHOPS.find(s=>s.id===currentShopId);
+  if(data === shop.qr){
+    stopCamera();
+    saveStamp(shop.id);
+    playStampAnimation(shop);
+  } else {
+    document.getElementById("camStatus").textContent = "このお店のQRコードではありません。もう一度お試しください。";
+    setTimeout(()=>{ if(scanning) requestAnimationFrame(scanLoop); }, 700);
+  }
+}
+
+function playStampAnimation(shop){
+  document.getElementById("scanBtn").style.display = "none";
+  document.getElementById("stampPlaceholder").style.display = "none";
+  const hanko = document.getElementById("hanko");
+  document.getElementById("hankoName").textContent = shop.name.length>2 ? shop.name.slice(0,2) : shop.name;
+  document.getElementById("hankoDate").textContent = new Date().toLocaleDateString("ja-JP",{month:"numeric",day:"numeric"});
+  hanko.classList.remove("show");
+  void hanko.offsetWidth;
+  hanko.classList.add("show");
+  showToast(`${shop.name} のスタンプを押しました！`);
+}
+
+/* ---------- toast ---------- */
+let toastTimer = null;
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=> t.classList.remove("show"), 2200);
+}
+
+/* ---------- wire up events ---------- */
+document.getElementById("backBtn").addEventListener("click", closeShop);
+document.getElementById("scanBtn").addEventListener("click", startCamera);
+document.getElementById("camClose").addEventListener("click", stopCamera);
+document.getElementById("openCardBtn").addEventListener("click", ()=> document.getElementById("cardModal").classList.add("active"));
+document.getElementById("closeCardBtn").addEventListener("click", ()=> document.getElementById("cardModal").classList.remove("active"));
+document.getElementById("cardModal").addEventListener("click", (e)=>{ if(e.target.id==="cardModal") e.currentTarget.classList.remove("active"); });
+document.getElementById("resetBtn").addEventListener("click", ()=>{
+  if(confirm("実証実験用：取得済みスタンプをすべてリセットしますか？")){
+    resetStamps(); renderMap(); showToast("スタンプをリセットしました");
+  }
+});
+
+renderMap();
+</script>
+</body>
+</html>
